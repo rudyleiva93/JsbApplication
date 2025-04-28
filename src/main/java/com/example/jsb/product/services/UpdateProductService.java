@@ -5,7 +5,6 @@ import com.example.jsb.product.ProductRepository;
 import com.example.jsb.product.model.Product;
 import com.example.jsb.product.model.ProductDTO;
 import com.example.jsb.product.model.UpdateProductCommand;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
