@@ -54,8 +54,6 @@ public class ProductController {
         return getProductService.execute(id);
     }
 
-    /*Something with the @PostMapping below is wonky. It adds the data to teh db but in postman, we get a 406 status not acceptable error.
-    We should be getting back a ProductDTO with the newly created product id*/
     @PutMapping("/product/{id}")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable Integer id, @RequestBody Product product){
         //pass in both id and product together

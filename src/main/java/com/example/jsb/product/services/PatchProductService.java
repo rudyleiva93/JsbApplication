@@ -5,8 +5,10 @@ import com.example.jsb.product.ProductRepository;
 import com.example.jsb.product.model.PatchProductCommand;
 import com.example.jsb.product.model.Product;
 import com.example.jsb.product.model.ProductDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,7 @@ import java.util.Optional;
 @Service
 public class PatchProductService implements Command<PatchProductCommand, ProductDTO> {
 
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     public PatchProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -24,13 +26,26 @@ public class PatchProductService implements Command<PatchProductCommand, Product
     @Override
     public ResponseEntity<ProductDTO> execute(PatchProductCommand command){
         Optional<Product> productOptional = productRepository.findById(command.getId());
-        ObjectMapper objectMapper = new ObjectMapper();
         if(productOptional.isPresent()){
-            JsonNode eixistingProduct = objectMapper.valueToTree(productOptional);
-            JsonNode merged = merge(eixistingProduct, command.getPatchNode());
-            //TODO: Convert JsonNode to Product object and return back ProductDTO as response for PATCH
-            //Product product =
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new Jdk8Module());
+
+            JsonNode existingProduct = objectMapper.valueToTree(productOptional);
+            JsonNode merged = merge(existingProduct, command.getPatchNode());
+
+            // This looks ugly... will see if there is a better way of writing this bit.
+            Product product = null;
+            try {
+                product = objectMapper.treeToValue(merged, Product.class);
+            } catch (JsonProcessingException e) {
+                // Will add 400 error handling later
+                return null;
+            }
+            product.setId(command.getId());
+            productRepository.save(product);
+            return  ResponseEntity.ok(new ProductDTO(product));
         }
+        return null;
     }
 
     private JsonNode merge(JsonNode original, JsonNode updates){
