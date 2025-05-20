@@ -4,7 +4,6 @@ import com.example.jsb.product.ProductRepository;
 import com.example.jsb.product.Query;
 import com.example.jsb.product.model.Product;
 import com.example.jsb.product.model.ProductDTO;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

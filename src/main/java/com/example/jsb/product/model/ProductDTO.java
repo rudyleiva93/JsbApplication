@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ProductDTO {
     @JsonProperty
-    private Integer id;
+    private final Integer id;
     @JsonProperty
-    private String name;
+    private final String name;
     @JsonProperty
-    private String description;
+    private final String description;
 
 
     public ProductDTO(Product product) {
