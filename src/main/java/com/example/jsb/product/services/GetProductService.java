@@ -1,7 +1,8 @@
 package com.example.jsb.product.services;
 
-import com.example.jsb.product.ProductRepository;
-import com.example.jsb.product.Query;
+import com.example.jsb.exceptions.ProductNotFoundException;
+import com.example.jsb.product.interfaces.ProductRepository;
+import com.example.jsb.product.interfaces.Query;
 import com.example.jsb.product.model.Product;
 import com.example.jsb.product.model.ProductDTO;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,6 @@ public class GetProductService implements Query<Integer, ProductDTO> {
             return ResponseEntity.ok(new ProductDTO((productOptional.get())));
         }
 
-        //In the future, throw exception
-        return null;
+        throw new ProductNotFoundException();
     }
 }

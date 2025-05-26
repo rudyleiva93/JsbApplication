@@ -1,7 +1,7 @@
 package com.example.jsb.product.services;
 
-import com.example.jsb.product.Command;
-import com.example.jsb.product.ProductRepository;
+import com.example.jsb.product.interfaces.Command;
+import com.example.jsb.product.interfaces.ProductRepository;
 import com.example.jsb.product.model.PatchProductCommand;
 import com.example.jsb.product.model.Product;
 import com.example.jsb.product.model.ProductDTO;

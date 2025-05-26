@@ -1,4 +1,4 @@
-package com.example.jsb.product;
+package com.example.jsb.product.interfaces;
 
 import com.example.jsb.product.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;

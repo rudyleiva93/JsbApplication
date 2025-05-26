@@ -1,4 +1,4 @@
-package com.example.jsb.product;
+package com.example.jsb.product.controllers;
 
 import com.example.jsb.product.model.PatchProductCommand;
 import com.example.jsb.product.model.Product;
