@@ -1,10 +1,13 @@
 package com.example.jsb.product.services;
 
+import com.example.jsb.exceptions.ProductNotFoundException;
+import com.example.jsb.exceptions.ProductNotValidException;
 import com.example.jsb.product.interfaces.Command;
 import com.example.jsb.product.interfaces.ProductRepository;
 import com.example.jsb.product.model.PatchProductCommand;
 import com.example.jsb.product.model.Product;
 import com.example.jsb.product.model.ProductDTO;
+import com.example.jsb.product.validators.ProdcutValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,14 +41,15 @@ public class PatchProductService implements Command<PatchProductCommand, Product
             try {
                 product = objectMapper.treeToValue(merged, Product.class);
             } catch (JsonProcessingException e) {
-                // Will add 400 error handling later
-                return null;
+                ProdcutValidator.execute(product);
             }
+
             product.setId(command.getId());
+            ProdcutValidator.execute(product);
             productRepository.save(product);
             return  ResponseEntity.ok(new ProductDTO(product));
         }
-        return null;
+        throw new ProductNotFoundException();
     }
 
     private JsonNode merge(JsonNode original, JsonNode updates){
