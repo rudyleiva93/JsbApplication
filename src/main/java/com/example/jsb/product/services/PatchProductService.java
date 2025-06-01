@@ -1,5 +1,6 @@
 package com.example.jsb.product.services;
 
+import com.example.jsb.exceptions.JsonPatchNotValidException;
 import com.example.jsb.exceptions.ProductNotFoundException;
 import com.example.jsb.exceptions.ProductNotValidException;
 import com.example.jsb.product.interfaces.Command;
@@ -7,7 +8,7 @@ import com.example.jsb.product.interfaces.ProductRepository;
 import com.example.jsb.product.model.PatchProductCommand;
 import com.example.jsb.product.model.Product;
 import com.example.jsb.product.model.ProductDTO;
-import com.example.jsb.product.validators.ProdcutValidator;
+import com.example.jsb.product.validators.ProductValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,17 +36,15 @@ public class PatchProductService implements Command<PatchProductCommand, Product
 
             JsonNode existingProduct = objectMapper.valueToTree(productOptional);
             JsonNode merged = merge(existingProduct, command.getPatchNode());
-
-            // This looks ugly... will see if there is a better way of writing this bit.
-            Product product = null;
+            Product product = command.getProduct();
             try {
                 product = objectMapper.treeToValue(merged, Product.class);
             } catch (JsonProcessingException e) {
-                ProdcutValidator.execute(product);
+                throw new JsonPatchNotValidException();
             }
 
             product.setId(command.getId());
-            ProdcutValidator.execute(product);
+            ProductValidator.execute(product);
             productRepository.save(product);
             return  ResponseEntity.ok(new ProductDTO(product));
         }

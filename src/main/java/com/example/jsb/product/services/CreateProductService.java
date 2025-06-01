@@ -4,7 +4,7 @@ import com.example.jsb.product.interfaces.Command;
 import com.example.jsb.product.interfaces.ProductRepository;
 import com.example.jsb.product.model.Product;
 import com.example.jsb.product.model.ProductDTO;
-import com.example.jsb.product.validators.ProdcutValidator;
+import com.example.jsb.product.validators.ProductValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class CreateProductService implements Command<Product, ProductDTO> {
 
     @Override
     public ResponseEntity<ProductDTO> execute(Product product) {
-        ProdcutValidator.execute(product);
+        ProductValidator.execute(product);
         Product savedProduct = productRepository.save(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ProductDTO(savedProduct));
     }

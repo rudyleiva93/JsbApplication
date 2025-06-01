@@ -6,9 +6,9 @@ import com.example.jsb.product.model.Product;
 import org.springframework.util.StringUtils;
 
 
-public class ProdcutValidator {
+public class ProductValidator {
 
-    private ProdcutValidator(){
+    private ProductValidator(){
     }
 
     public static void execute(Product product){
