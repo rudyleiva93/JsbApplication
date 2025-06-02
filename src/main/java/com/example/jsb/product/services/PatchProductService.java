@@ -2,7 +2,6 @@ package com.example.jsb.product.services;
 
 import com.example.jsb.exceptions.JsonPatchNotValidException;
 import com.example.jsb.exceptions.ProductNotFoundException;
-import com.example.jsb.exceptions.ProductNotValidException;
 import com.example.jsb.product.interfaces.Command;
 import com.example.jsb.product.interfaces.ProductRepository;
 import com.example.jsb.product.model.PatchProductCommand;
@@ -29,13 +28,13 @@ public class PatchProductService implements Command<PatchProductCommand, Product
 
     @Override
     public ResponseEntity<ProductDTO> execute(PatchProductCommand command){
-        Optional<Product> productOptional = productRepository.findById(command.getId());
+        Optional<Product> productOptional = productRepository.findById(command.id());
         if(productOptional.isPresent()){
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new Jdk8Module());
 
             JsonNode existingProduct = objectMapper.valueToTree(productOptional);
-            JsonNode merged = merge(existingProduct, command.getPatchNode());
+            JsonNode merged = merge(existingProduct, command.patchNode());
             Product product;
             try {
                 product = objectMapper.treeToValue(merged, Product.class);
@@ -43,7 +42,7 @@ public class PatchProductService implements Command<PatchProductCommand, Product
                 throw new JsonPatchNotValidException();
             }
 
-            product.setId(command.getId());
+            product.setId(command.id());
             ProductValidator.execute(product);
             productRepository.save(product);
             return  ResponseEntity.ok(new ProductDTO(product));
