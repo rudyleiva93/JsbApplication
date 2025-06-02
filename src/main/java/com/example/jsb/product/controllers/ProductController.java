@@ -61,8 +61,8 @@ public class ProductController {
     }
 
     @PatchMapping("/product/{id}")
-    public ResponseEntity<ProductDTO> patchProduct(@PathVariable Integer id, @RequestBody Product product, @RequestBody JsonNode patchBody){
-        return patchProductService.execute(new PatchProductCommand(id, product, patchBody));
+    public ResponseEntity<ProductDTO> patchProduct(@PathVariable Integer id, @RequestBody JsonNode patchBody){
+        return patchProductService.execute(new PatchProductCommand(id, patchBody));
     }
 
     @DeleteMapping("/product/{id}") //id here must match id in line below

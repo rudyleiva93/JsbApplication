@@ -36,7 +36,7 @@ public class PatchProductService implements Command<PatchProductCommand, Product
 
             JsonNode existingProduct = objectMapper.valueToTree(productOptional);
             JsonNode merged = merge(existingProduct, command.getPatchNode());
-            Product product = command.getProduct();
+            Product product;
             try {
                 product = objectMapper.treeToValue(merged, Product.class);
             } catch (JsonProcessingException e) {
