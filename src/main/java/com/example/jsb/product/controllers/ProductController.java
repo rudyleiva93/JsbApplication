@@ -14,27 +14,33 @@ import java.util.List;
 @RestController
 public class ProductController {
 
-    public final CreateProductService createProductService;
+    private final CreateProductService createProductService;
 
-    public final DeleteProductService deleteProductService;
+    private final DeleteProductService deleteProductService;
 
-    public final UpdateProductService updateProductService;
+    private final UpdateProductService updateProductService;
 
-    public final PatchProductService patchProductService;
+    private final PatchProductService patchProductService;
 
-    public final GetProductsService getProductsService;
+    private final GetProductsService getProductsService;
 
-    public final GetProductService getProductService;
+    private final GetProductService getProductService;
+
+    private final SearchProductService searchProductService;
+
+
 
     public ProductController(CreateProductService createProductService, DeleteProductService deleteProductService,
                              UpdateProductService updateProductService, GetProductsService getProductsService,
-                             GetProductService getProductService, PatchProductService patchProductService) {
+                             GetProductService getProductService, PatchProductService patchProductService,
+                             SearchProductService searchProductService) {
         this.createProductService = createProductService;
         this.deleteProductService = deleteProductService;
         this.updateProductService = updateProductService;
         this.patchProductService = patchProductService;
         this.getProductsService = getProductsService;
         this.getProductService = getProductService;
+        this.searchProductService = searchProductService;
     }
 
 
@@ -52,6 +58,11 @@ public class ProductController {
     @GetMapping(value = "/product/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id){
         return getProductService.execute(id);
+    }
+
+    @GetMapping("/product/search")
+    public ResponseEntity<List<ProductDTO>> searchByProductName(@RequestParam String name) {
+        return searchProductService.execute(name);
     }
 
     @PutMapping("/product/{id}")
