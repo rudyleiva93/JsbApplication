@@ -1,6 +1,5 @@
 package com.example.jsb.product.services;
 
-import com.example.jsb.exceptions.JsonPatchNotValidException;
 import com.example.jsb.exceptions.ProductNotFoundException;
 import com.example.jsb.product.interfaces.Command;
 import com.example.jsb.product.interfaces.ProductRepository;
@@ -8,10 +7,8 @@ import com.example.jsb.product.model.PatchProductCommand;
 import com.example.jsb.product.model.Product;
 import com.example.jsb.product.model.ProductDTO;
 import com.example.jsb.product.validators.ProductValidator;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.jsb.utils.JsonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -30,18 +27,10 @@ public class PatchProductService implements Command<PatchProductCommand, Product
     public ResponseEntity<ProductDTO> execute(PatchProductCommand command){
         Optional<Product> productOptional = productRepository.findById(command.id());
         if(productOptional.isPresent()){
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new Jdk8Module());
-
-            JsonNode existingProduct = objectMapper.valueToTree(productOptional);
-            JsonNode merged = merge(existingProduct, command.patchNode());
-            Product product;
-            try {
-                product = objectMapper.treeToValue(merged, Product.class);
-            } catch (JsonProcessingException e) {
-                throw new JsonPatchNotValidException();
-            }
-
+            Product product = productOptional.orElseThrow(ProductNotFoundException::new);
+            JsonNode existingProduct = JsonUtils.convertToJson(product);
+            JsonNode patched = JsonUtils.merge(existingProduct, command.patchNode());
+            product = JsonUtils.convertFromJson(patched, Product.class);
             product.setId(command.id());
             ProductValidator.execute(product);
             productRepository.save(product);
@@ -50,12 +39,4 @@ public class PatchProductService implements Command<PatchProductCommand, Product
         throw new ProductNotFoundException();
     }
 
-    private JsonNode merge(JsonNode original, JsonNode updates){
-        updates.fieldNames().forEachRemaining(fieldName -> {
-            JsonNode updatedValue = updates.get(fieldName);
-            ((com.fasterxml.jackson.databind.node.ObjectNode) original).set(fieldName, updatedValue);
-        });
-
-        return original;
-    }
 }
