@@ -10,9 +10,9 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 public class JsonUtils {
 
-    public static JsonNode convertToJson(Product product ){
+    public static <T> JsonNode convertToJson(T object){
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module());
-        return objectMapper.valueToTree(product);
+        return objectMapper.valueToTree(object);
 
     }
 
