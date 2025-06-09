@@ -5,6 +5,8 @@ import com.example.jsb.exceptions.ProductNotValidException;
 import com.example.jsb.product.model.Product;
 import org.springframework.util.StringUtils;
 
+import java.util.Objects;
+
 
 public class ProductValidator {
 
@@ -15,7 +17,7 @@ public class ProductValidator {
         if(StringUtils.isEmpty(product.getName())){
             throw new ProductNotValidException(ErrorMessages.NAME_REQUIRED.getMessage());
         }
-        if(product.getDescription().length() < 20){
+        if(product.getDescription() == null || product.getDescription().length() < 20 ){
             throw new ProductNotValidException(ErrorMessages.DESCRIPTION_LENGTH.getMessage());
         }
         if(product.getPrice() == null || product.getPrice() < 0.00){

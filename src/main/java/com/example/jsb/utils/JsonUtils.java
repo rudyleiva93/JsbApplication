@@ -5,6 +5,7 @@ import com.example.jsb.product.model.Product;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 public class JsonUtils {
@@ -25,10 +26,10 @@ public class JsonUtils {
     }
 
     public static JsonNode merge(JsonNode original, JsonNode updates){
-        updates.fieldNames().forEachRemaining(fieldName -> {
-            JsonNode updatedValue = updates.get(fieldName);
-            ((com.fasterxml.jackson.databind.node.ObjectNode) original).set(fieldName, updatedValue);
-        });
+        if (original instanceof ObjectNode originalObject && updates != null) {
+            updates.fields().forEachRemaining(fieldName ->
+                    originalObject.set(fieldName.getKey(), fieldName.getValue()));
+        }
 
         return original;
     }
