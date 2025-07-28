@@ -1,7 +1,9 @@
 package com.example.jsb.product.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 public class ProductDTO {
     @JsonProperty
     private final Integer id;
@@ -16,4 +18,5 @@ public class ProductDTO {
         this.name = product.getName();
         this.description = product.getDescription();
     }
+
 }
